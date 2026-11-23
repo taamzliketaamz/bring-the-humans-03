@@ -80,5 +80,4 @@ function run(): number {
   return 0;
 }
 
-
 process.exit(run());

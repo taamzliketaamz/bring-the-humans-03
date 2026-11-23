@@ -63,9 +63,22 @@ function run(): number {
     console.error(`main: copied ${POINTER_FILE} has no usable "url" field`);
     return 1;
   }
+  // A non-empty string is not enough: the grader will try to open this
+  // link, so reject anything that is not a well-formed https URL here
+  // rather than letting a typo'd pointer sail through as a "success".
+  try {
+    const url = new URL(parsed.url);
+    if (url.protocol !== "https:") {
+      throw new Error(`unexpected protocol "${url.protocol}"`);
+    }
+  } catch (err) {
+    console.error(`main: copied ${POINTER_FILE} has an invalid "url": ${err.message}`);
+    return 1;
+  }
 
   console.log(`main: copied ${source} -> ${destination} (url: ${parsed.url})`);
   return 0;
 }
+
 
 process.exit(run());
